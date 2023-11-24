@@ -1,15 +1,4 @@
-# Group Delta
-# Blake Nicholson, Robert Nightingale, Blair O'Dwyer, Ralu Ofoche, Roy Phelps, Sharol Tamekong
-# UMGC Data 630 9040: Machine Learning (2235)
-#
-# August 4, 2023
-# For Dr. Ami Gates
-# 
-# Group Assignnment
-#
-# Code file name:
-# group_project-test.R
-#
+
 
 
 Needed <- c("tm", "SnowballCC", "RColorBrewer", "ggplot2", "wordcloud", "biclust", 
