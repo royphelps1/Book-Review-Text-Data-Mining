@@ -6,11 +6,8 @@
 library(dplyr)
 library(ggplot2)
 
-# Blake's working directory "C:\\Users\\blake\\OneDrive\\Documents\\UMUC\\DATA630\\GroupProject\\DATA_630_GROUP\\datasets"
-# Blake's mac working directory "/Users/blakenicholson/Documents/development/DATA_630_GROU/datasets"
-# Robert Nightingale's working directory (Windows 11)
-working_directory <- "C:/Users/Bob/OneDrive/Documents/UMGC/Data 630/Group Project/datasets"
-# Roy's Working Directory "/Users/royphelps/Library/CloudStorage/OneDrive-UMGC/Classes/Data 630 9040/Group Project/Data"
+
+# Roy's Working Directory "/Users/....."
 
 # need to adjust for which OS you are on
 mac_path <- "/labeled_datasets/"
