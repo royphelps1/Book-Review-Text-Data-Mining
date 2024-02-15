@@ -7,7 +7,7 @@ library(dplyr)
 library(ggplot2)
 
 
-# Roy's Working Directory "/Users/....."
+# Roy's Working Directory "/"
 
 # need to adjust for which OS you are on
 mac_path <- "/labeled_datasets/"
