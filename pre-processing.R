@@ -1,4 +1,4 @@
-####package install if needed only####
+# ~~~ package install if needed only ~~~
 
 Needed <- c("tm", "SnowballCC", "RColorBrewer", "ggplot2", "wordcloud", "biclust", 
             "cluster", "igraph", "fpc")
@@ -6,20 +6,16 @@ install.packages(Needed, dependencies = TRUE)
 
 install.packages("Rcampdf", repos = "http://datacube.wu.ac.at/", type = "source")
 
-# create your own base working directory
-# Comment out your name and the directory on your computer so you can swap out as others upload changes
-# Blake's working directory "C:\\Users\\blake\\OneDrive\\Documents\\UMUC\\DATA630\\GroupProject\\DATA_630_GROUP\\datasets"
-# Blake's mac working directory "/Users/blakenicholson/Documents/development/DATA_630_GROU/datasets"
-# Robert Nightingale's working directory (Windows 11)
-# working_directory <- "C:/Users/Bob/OneDrive/Documents/UMGC/Data 630/Group Project/datasets"
-# Roy's Working Directory "/Users/royphelps/Library/CloudStorage/OneDrive-UMGC/Classes/Data 630 9040/Group Project/Data"
+# Create your own base working directory
+# working directory <- "/Users/"... Mac Path
+# working directory <- "C:\\Users\\"... Windows Path
 
-working_directory <- "/Users/blakenicholson/Documents/development/DATA_630_GROUP/datasets"
-#setwd("C:\\Users\\blake\\OneDrive\\Documents\\UMUC\\DATA630\\GroupProject\\datasets")
-setwd("/Users/royphelps/Library/CloudStorage/OneDrive-UMGC/Classes/Data 630 9040/Group Project/Data")
+# setwd("/Users/"...Mac Path
+# setwd("C:\\Users\\"....Windows Path
+
 getwd()
-####READ THE FILES INTO A FRAME####
-#each column has to be labeled
+# ~~~ READ THE FILES INTO A FRAME ~~~
+# Each column has to be labeled
 
 Andy.Weir.The.Martian<- read.delim("Andy-Weir-The-Martian.csv", header = FALSE)
 colnames(Andy.Weir.The.Martian)<- c("Score", "URL", "Review Title", "review text")
@@ -46,13 +42,13 @@ Suzanne.Collins.The.Hunger.Games<- read.delim("Suzanne-Collins-The-Hunger-Games.
 colnames(Suzanne.Collins.The.Hunger.Games)<- c("Score", "URL", "Review Title", "review text")
 Suzanne.Collins.The.Hunger.Games$URL<-NULL
 
-#VCorpus only accepts files from a directory so they will need to be exported to a new set of files and read into the function
-# if on mac change the file path to "/labeled_datasets"
+# VCorpus only accepts files from a directory so they will need to be exported to a new set of files and read into the function
 # need to adjust for which OS you are on
-mac_path <- "/Users/royphelps/Library/CloudStorage/OneDrive-UMGC/Classes/Data 630 9040/Group Project/Data/output"
-#pc_path <- "\\labeled_datasets\\"
+# mac_path <- "/Users/"
+# pc_path <- "C:\\Users\\"
 # full path is working dirrectory plus whatever system type you are working on
-full_path <- paste0("/Users/royphelps/Library/CloudStorage/OneDrive-UMGC/Classes/Data 630 9040/Group Project/Data")
+# full_path <- paste0("/Users/")...Mac Os
+# full_path <- paste0("C:\\Users")...Windows Path
 
 write.csv(Andy.Weir.The.Martian, paste0(full_path, "Andy.Weir.The.Martian.csv"), row.names=FALSE)
 write.csv(EL.James.Fifty.Shades.of.Grey,  paste0(full_path, "EL.James.Fifty.Shades.of.Grey.csv"), row.names=FALSE)
@@ -64,23 +60,23 @@ write.csv(Paula.Hawkins.The.Girl.On.The.Train,paste0(full_path, "Paula.Hawkins.T
 write.csv(Suzanne.Collins.The.Hunger.Games,paste0(full_path, "Suzanne.Collins.The.Hunger.Games.csv"), row.names=FALSE)
 
 # change the directory to the labeled_datasets dir by using the full_path variable
-# if on mac change the file path to "/labeled_datasets"
-# /Users/royphelps/Library/CloudStorage/OneDrive-UMGC/Classes/Data 630 9040/Group Project/Data/output
+# /Users/labeled_datasets...Mac full_path
+# C:\\Users\\labeled_datasets...Windows full_path
 cname<- file.path(full_path)
 cname
 dir(cname)
 # load the required libraries
 library(tm)
 library(SnowballC)
-#create the Corpus
+# Create the Corpus
 docs <- VCorpus(DirSource(cname))
-# get rid of erroneous characters
+# Get rid of erroneous characters
 for (j in seq(docs)) {
   docs[[j]]<- gsub("<.*?>", " ",docs[[j]])
   docs[[j]]<- gsub(",\"", " ",docs[[j]])
   docs[[j]]<- iconv(docs[[j]],from="UTF-8",to="ASCII",sub="")
   }
-# add custom stopwords
+# Add custom stopwords
 default_stopwords <- stopwords("english")
 custom_stopwords <- c("read", "reading", "book", "books")
 all_stopwords <- c(default_stopwords, custom_stopwords)
@@ -98,7 +94,7 @@ inspect(dtm)
 
 
 
-# create wordcloud
+# Create wordcloud
 library(wordcloud)
 m <- as.matrix(dtm)
 v <- sort(colSums(m), decreasing = T)
@@ -113,7 +109,7 @@ cloud <- wordcloud(d$word, d$freq, min.freq = 5000,
                    colors=brewer.pal(8,"Dark2")
                    )
 
-#bar plot of top words
+# Bar plot of top words
 barplot(d[1:20,]$freq, las=2, names.arg = d[1:20,]$word,
         col = "lightblue", main = "Most frequent words all Ratings",
         ylab = "Word frequencies")
@@ -136,7 +132,7 @@ for (i in seq_along(data_frames)) {
 }
 rm(combined_df)
 
-# Step 4: Combine all the data frames into one
+# Combine all the data frames into one
 combined_data <- do.call(rbind, data_frames)
 combined_data$Review.Title
 combined_text <- paste(combined_data$Review.Title, combined_data$review.text, sep = " ")
@@ -197,7 +193,7 @@ kmeansres <- kmeans(dtm, centers = 4)
 # Get the cluster assignments
 cluster_assignments <- kmeansres$cluster
 
-# plot the cluster plot
+# Plot the cluster plot
 # install.packages("factoextra")
 library(factoextra)
 fviz_cluster(kmeansres, data = dtm)
@@ -207,7 +203,7 @@ dtm$cluster
 kmeansres$tot.withinss
 
 
-# create a csv file to explore the data 
+# Create a csv file to explore the data 
 dtm_matrix <- as.matrix(dtm)
 head(dtm$dimnames$Docs, 20)
 output_file <- "matrix.csv"
@@ -267,8 +263,10 @@ word_freq_df <- do.call(rbind, top_word_counts_list)
 word_freq_df
 output_file <- "word_Sums.csv"
 write.csv(word_freq_df, file = output_file)
+
 # create a data frame with the word counts by cluster
 sorted_cluster <- read.csv("word_Sums.csv")
+
 # plot the counts by cluster
 ggplot(sorted_cluster, aes(x = word, y = count, fill = factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
@@ -281,10 +279,13 @@ csv_file <- "Suzanne.Collins.The.Hunger.Games.csv"
 data3 <- read.csv(csv_file)
 combined_text <- paste(data3$Review.Title, data3$review.text, sep = " ")
 library(tm)
+
 # Create a corpus from the combined text
 corpus_star <- Corpus(VectorSource(combined_text))
+
 # Preprocess the corpus
 default_stopwords <- stopwords("english")
+
 # add custom stop words as needed to filter
 custom_stopwords <- c("read", "reading", "book", "books", "classasizebase", "reviewtexti", "span", "reviewtextthis", "stars")
 all_stopwords <- c(default_stopwords, custom_stopwords)
@@ -305,7 +306,7 @@ words <- names(v)
 d <- data.frame(word=words, freq=v)
 
 
-#bar plot of top words
+# bar plot of top words
 title <- "Most Freq Hunger Games"
 barplot(d[1:20,]$freq, las=2, names.arg = d[1:20,]$word,
         col = "lightblue", main = title,
