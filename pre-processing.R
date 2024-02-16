@@ -14,9 +14,9 @@ install.packages("Rcampdf", repos = "http://datacube.wu.ac.at/", type = "source"
 # setwd("C:\\Users\\"....Windows Path
 
 getwd()
+
 # ~~~ READ THE FILES INTO A FRAME ~~~
 # Each column has to be labeled
-
 Andy.Weir.The.Martian<- read.delim("Andy-Weir-The-Martian.csv", header = FALSE)
 colnames(Andy.Weir.The.Martian)<- c("Score", "URL", "Review Title", "review text")
 Andy.Weir.The.Martian$URL<- NULL
@@ -65,17 +65,21 @@ write.csv(Suzanne.Collins.The.Hunger.Games,paste0(full_path, "Suzanne.Collins.Th
 cname<- file.path(full_path)
 cname
 dir(cname)
+
 # load the required libraries
 library(tm)
 library(SnowballC)
+
 # Create the Corpus
 docs <- VCorpus(DirSource(cname))
+
 # Get rid of erroneous characters
 for (j in seq(docs)) {
   docs[[j]]<- gsub("<.*?>", " ",docs[[j]])
   docs[[j]]<- gsub(",\"", " ",docs[[j]])
   docs[[j]]<- iconv(docs[[j]],from="UTF-8",to="ASCII",sub="")
   }
+
 # Add custom stopwords
 default_stopwords <- stopwords("english")
 custom_stopwords <- c("read", "reading", "book", "books")
@@ -92,8 +96,6 @@ dtm <- DocumentTermMatrix(docs)
 dtm <- removeSparseTerms(dtm, .99)
 inspect(dtm)
 
-
-
 # Create wordcloud
 library(wordcloud)
 m <- as.matrix(dtm)
@@ -101,6 +103,7 @@ v <- sort(colSums(m), decreasing = T)
 head(v,50)
 words <- names(v)
 d <- data.frame(word=words, freq=v)
+
 # cloud <- wordcloud(d$word, d$freq, min.freq = 5000)
 cloud <- wordcloud(d$word, d$freq, min.freq = 5000,
                    max.words=500,
@@ -123,7 +126,6 @@ dir()
 csv_files <- list.files(pattern = "*.csv")
 
 # Read each .csv file and store them in single data frames
-
 data_frames <- lapply(csv_files, function(file) {
   read.csv(file, header = TRUE) 
 })
@@ -137,10 +139,13 @@ combined_data <- do.call(rbind, data_frames)
 combined_data$Review.Title
 combined_text <- paste(combined_data$Review.Title, combined_data$review.text, sep = " ")
 library(tm)
+
 # Create a corpus from the combined text
 corpus_star <- Corpus(VectorSource(combined_text))
+
 # Preprocess the corpus
 default_stopwords <- stopwords("english")
+
 # add custom stop words as needed to filter
 custom_stopwords <- c("read", "reading", "book", "books", "classasizebase", "reviewtexti", "span", "reviewtextthis", "stars")
 all_stopwords <- c(default_stopwords, custom_stopwords)
@@ -180,16 +185,14 @@ for (i in 1:n_clusters) {
 library(tibble)
 wss_df <- tibble(clusters = 1:n_clusters, wss = wss)
 library(ggplot2)
-
 scree_plot <- ggplot(wss_df, aes(x = clusters, y = wss, group = 1)) +
   geom_point(size = 4)+
   geom_line() +
   scale_x_continuous(breaks = c(2, 4, 6, 8, 10)) +
   xlab('Number of clusters')
 scree_plot
-
-
 kmeansres <- kmeans(dtm, centers = 4)
+
 # Get the cluster assignments
 cluster_assignments <- kmeansres$cluster
 
@@ -197,7 +200,6 @@ cluster_assignments <- kmeansres$cluster
 # install.packages("factoextra")
 library(factoextra)
 fviz_cluster(kmeansres, data = dtm)
-
 dtm$cluster <- kmeansres$cluster
 dtm$cluster
 kmeansres$tot.withinss
@@ -208,12 +210,10 @@ dtm_matrix <- as.matrix(dtm)
 head(dtm$dimnames$Docs, 20)
 output_file <- "matrix.csv"
 write.csv(dtm_matrix, file = output_file)
-
 m <- as.matrix(dtm)
 v <- sort(colSums(m), decreasing = T)
 head(v,50)
 words <- names(v)
-
 dtmmatrix <- as.matrix(dtm)
 dtm_df <- as.data.frame(dtmmatrix)
 row.names(dtm_df) <- dtm$dimnames$Docs
@@ -245,6 +245,7 @@ for (i in seq_along(most_common_words_per_cluster)) {
 }
 
 most_common_words_per_cluster
+
 # create an empty list to store the word counts and clusters
 top_word_counts_list <- list()
 for (i in seq_along(dtm_list)) {
@@ -289,7 +290,6 @@ default_stopwords <- stopwords("english")
 # add custom stop words as needed to filter
 custom_stopwords <- c("read", "reading", "book", "books", "classasizebase", "reviewtexti", "span", "reviewtextthis", "stars")
 all_stopwords <- c(default_stopwords, custom_stopwords)
-
 corpus_star <- tm_map(corpus_star, tolower)
 corpus_star <- tm_map(corpus_star, removePunctuation)
 corpus_star <- tm_map(corpus_star, removeNumbers)
