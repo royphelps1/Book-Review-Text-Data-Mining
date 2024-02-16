@@ -1,18 +1,20 @@
+# ~~~ Star Rating Split ~~~
+
 library(dplyr)
 library(readr)
 library(tidyr)
 
 # Directory for the original files based on OS
 # full_path is from the pre-processing script. make sure to run that first
-mac_path <- "/"
-pc_path_sep <- "\\"
+# mac_path <- "/"
+# pc_path_sep <- "\\"
 # choose whichever OS you are on in the next line
 directory <- paste0(full_path, mac_path)
 
 # Get the list of CSV files in the directory
-
 csv_files <- list.files(directory, pattern = ".csv$", full.names = TRUE)
-#check the list to ensure all are there
+
+# check the list to ensure all are there
 csv_files
 
 # Create a list to store the dataframes for each score
@@ -61,6 +63,7 @@ corpus_star <- Corpus(VectorSource(combined_text))
 
 # Preprocess the corpus
 default_stopwords <- stopwords("english")
+
 # add custom stop words as needed to filter
 custom_stopwords <- c("read", "reading", "book", "books", "classasizebase", "reviewtexti", "span", "reviewtextthis", "stars")
 all_stopwords <- c(default_stopwords, custom_stopwords)
@@ -75,6 +78,7 @@ corpus_star <- tm_map(corpus_star, stripWhitespace)
 # Create a document-term matrix
 dtm <- DocumentTermMatrix(corpus_star)
 dtm <- removeSparseTerms(dtm, .99)
+
 # create wordcloud
 library(wordcloud)
 m <- as.matrix(dtm)
@@ -83,6 +87,7 @@ head(v,50)
 words <- names(v)
 words
 d <- data.frame(word=words, freq=v)
+
 # change the min.freq to adjust how many words in the cloud. Higher freq yields fewer words
 cloud <- wordcloud(d$word, d$freq, min.freq = 2500)
 
