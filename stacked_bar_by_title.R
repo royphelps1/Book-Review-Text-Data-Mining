@@ -1,16 +1,15 @@
-#
-# stacked_bar_by_title.R
+
+# ~~~ stacked_bar_by_title.R ~~~
 # July 29, 2023
-#
-#
+
+
 library(dplyr)
 library(ggplot2)
 
 
-# Roy's Working Directory "/"
-
 # need to adjust for which OS you are on
-mac_path <- "/labeled_datasets/"
+# mac_path <- "/labeled_datasets/"
+# windows_path <- "C:\\labeled_datasets\\"
 
 # full path is working dirrectory plus whatever system type you are working on
 full_path <- paste0(working_directory, mac_path)
@@ -20,7 +19,7 @@ setwd(full_path)
 getwd()
 
 
-#Stacked bar of top words and their books
+# Stacked bar of top words and their books
 csv_files <- list.files(full_path, pattern = ".csv$", full.names = TRUE)
 
 d <- data.frame(word=NULL, freq=NULL, title=NULL)
@@ -40,10 +39,13 @@ for (i in seq_along(csv_files)) {
   data3 <- read.csv(csv_file)
   combined_text <- paste(data3$Review.Title, data3$review.text, sep = " ")
   library(tm)
+ 
   # Create a corpus from the combined text
   corpus_star <- Corpus(VectorSource(combined_text))
+ 
   # Preprocess the corpus
   default_stopwords <- stopwords("english")
+ 
   # add custom stop words as needed to filter
   custom_stopwords <- c("read", "reading", "book", "books", "classasizebase", "reviewtexti", "span", "reviewtextthis", "stars")
   all_stopwords <- c(default_stopwords, custom_stopwords)
