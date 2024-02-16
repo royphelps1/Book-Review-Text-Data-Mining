@@ -7,12 +7,12 @@ install.packages(Needed, dependencies = TRUE)
 
 install.packages("Rcampdf", repos = "http://datacube.wu.ac.at/", type = "source")
 
-setwd("C:/Users/Admin-PC/Desktop/DATA630/Group Project")
+setwd("C:/Users/")
 
 
-####READ THE FILES INTO A FRAME####
-#each column has to be labeled
-#after that the
+# ~~~ READ THE FILES INTO A FRAME ~~~
+# Each column has to be labeled
+
 
 #1
 Andy.Weir.The.Martian<- read.delim("Andy-Weir-The-Martian.csv", header = FALSE)
@@ -70,7 +70,7 @@ Suzanne.Collins.The.Hunger.Games$URL<-NULL
 Suzanne.Collins.The.Hunger.Games$Score<-factor(Suzanne.Collins.The.Hunger.Games$Score)
 
 
-#VCorpus only accepts files from a directory so they will need to be exported to a new set of files and read into the function
+# VCorpus only accepts files from a directory so they will need to be exported to a new set of files and read into the function
 
 write.csv(Andy.Weir.The.Martian,"C:\\Users\\Admin-PC\\Desktop\\DATA630\\Group Project//labled datasets\\Andy.Weir.The.Martian.csv", row.names=FALSE)
 write.csv(EL.James.Fifty.Shades.of.Grey,"C:\\Users\\Admin-PC\\Desktop\\DATA630\\Group Project//labled datasets\\EL.James.Fifty.Shades.of.Grey.csv", row.names=FALSE)
@@ -81,7 +81,7 @@ write.csv(John.Green.The.Fault.in.our.Stars,"C:\\Users\\Admin-PC\\Desktop\\DATA6
 write.csv(Paula.Hawkins.The.Girl.On.The.Train,"C:\\Users\\Admin-PC\\Desktop\\DATA630\\Group Project//labled datasets\\Paula.Hawkins.The.Girl.On.The.Train.csv", row.names=FALSE)
 write.csv(Suzanne.Collins.The.Hunger.Games,"C:\\Users\\Admin-PC\\Desktop\\DATA630\\Group Project//labled datasets\\Suzanne.Collins.The.Hunger.Games.csv", row.names=FALSE)
 
-#plot the distribution of reviews
+# Plot the distribution of reviews
 all_books <- bind_rows(Andy.Weir.The.Martian = Andy.Weir.The.Martian, 
                        Donna.Tartt.The.Goldfinch = Donna.Tartt.The.Goldfinch, 
                        EL.James.Fifty.Shades.of.Grey = EL.James.Fifty.Shades.of.Grey,
@@ -99,7 +99,7 @@ ggplot(all_books, aes(fill = Book, x = Score))+
   ggtitle("Distribution of Reviews")
 
 
-####Text Analysis####
+# ~~~ Text Analysis ~~~
 library(tm)
 library(caTools)
 library(dplyr)
@@ -111,13 +111,13 @@ library(Rgraphviz)
 cname<- file.path("C:/Users/Admin-PC/Desktop/DATA630/Group Project/labled datasets")
 cname
 dir(cname)
-#1 Pre-processing
-#create stop words vectors
+# 1 Pre-processing
+# Create stop words vectors
 default_stopwords <- stopwords("english")
 custom_stopwords <- c("read", "reading", "book", "books", "classasizebase", "reviewtexti", "span", "reviewtextthis")
 all_stopwords <- c(default_stopwords, custom_stopwords)
 
-#remove stop words,punctuation and numbers
+# Remove stop words,punctuation and numbers
 corpus_books<-Corpus(DirSource(cname))
 corpus_books <- tm_map(corpus_books, tolower)
 corpus_books <- tm_map(corpus_books, removePunctuation)
@@ -127,7 +127,7 @@ corpus_books <- tm_map(corpus_books, stripWhitespace)
 corpus_books <- tm_map(corpus_books, stemDocument)
 dtm$cluster
 dtm_books<-DocumentTermMatrix(corpus_books[2])
-#remove sparse terms
+# remove sparse terms
 dtm_books<-removeSparseTerms(dtm_books, 0.2)
 
 wf <- data.frame(docs=Docs(dtm_books), as.matrix(dtm_books))
@@ -143,7 +143,7 @@ wf2<- wf[order(wf$n,decreasing = TRUE),] %>%
   facet_wrap(~ docs) + 
   theme(axis.text.x=element_text(angle=45, hjust=1))
 
-#term document matrices with TF-IDF Weight
+# Term document matrices with TF-IDF Weight
 tdm_books<-TermDocumentMatrix(corpus_books, control = list(weighting = weightTfIdf))
 inspect(tdm_books)
 freq = rowSums(as.matrix(tdm_books))
@@ -160,7 +160,7 @@ ggplot(top20.freq.df, aes(reorder(names,top20.freq), top20.freq)) +
   xlab("Terms") + ylab("Frequency") +
   ggtitle("Term frequencies")
 
-#term document matrices with TF-IDF Weight
+# Term document matrices with TF-IDF Weight
 dtm_books2<-DocumentTermMatrix(corpus_books, control = list(weighting = weightTfIdf))
 inspect(dtm_books2)
 freq2 = rowSums(as.matrix(dtm_books2))
@@ -181,16 +181,16 @@ library(readr)
 library(tidyr)
 
 # Directory for the original files based on OS
-# full_path is from the pre-processing script. make sure to run that first
+# full_path is from the pre-processing script. Make sure to run that first.
 mac_path <- "/"
 pc_path_sep <- "\\"
-# choose whichever OS you are on in the next line
+# Choose whichever OS you are on in the next line
 directory <- paste0(full_path, mac_path)
 
 # Get the list of CSV files in the directory
 
 csv_files <- list.files(directory, pattern = ".csv$", full.names = TRUE)
-#check the list to ensure all are there
+# Check the list to ensure all are there
 csv_files
 
 # Create a list to store the dataframes for each score
@@ -337,7 +337,7 @@ setwd(full_path)
 getwd()
 
 
-#Stacked bar of top words and their books
+# Stacked bar of top words and their books
 csv_files <- list.files(full_path, pattern = ".csv$", full.names = TRUE)
 
 d <- data.frame(word=NULL, freq=NULL, title=NULL)
